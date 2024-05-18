@@ -31,6 +31,10 @@ jobs:
 
       - name: Run govulncheck
         run: |
+          # Install govulncheck
+          go install golang.org/x/vuln/cmd/govulncheck@latest
+          # Update path
+          export PATH="$(go env GOPATH)/bin:$PATH"
           govulncheck ./...
 
       - name: Run staticcheck
