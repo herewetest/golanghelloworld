@@ -4,16 +4,10 @@ ARG TARGETPLATFORM
 ARG BUILDPLATFORM
 ARG TARGETOS
 ARG TARGETARCH
-ARG GOARM
 
 COPY . .
-RUN uname -m
-RUN case "$TARGETARCH" in \
-    arm) echo "Setting GOARM to 6"; export GOARM=6 ;; \
-    *) true ;; \
-    esac
 
-RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} GOARM=${GOARM} CGO_ENABLED=1 go build -ldflags "-s -w -linkmode external -extldflags -static" -o helloworld .
+RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH}go build -o helloworld .
 
 # ----------------------------------
 
