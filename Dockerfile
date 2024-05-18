@@ -4,12 +4,12 @@ ARG TARGETPLATFORM
 ARG BUILDPLATFORM
 ARG TARGETOS
 ARG TARGETARCH
+ARG GOARM
 
 COPY . .
 RUN uname -m
-RUN case "$(uname -m)" in \
-    armv6l|armv6) echo "Setting GOARM to 6"; export GOARM=6 ;; \
-    armv7l|armv7) echo "Setting GOARM to 7"; export GOARM=7 ;; \
+RUN case "$TARGETARCH" in \
+    arm) echo "Setting GOARM to 6"; export GOARM=6 ;; \
     *) true ;; \
     esac
 
