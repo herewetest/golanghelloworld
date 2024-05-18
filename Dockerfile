@@ -6,6 +6,12 @@ ARG TARGETOS
 ARG TARGETARCH
 
 COPY . .
+RUN case "$(uname -m)" in \
+    armv6l|armv6) export GOARM=6 ;; \
+    armv7l|armv7) export GOARM=7 ;; \
+    *) true ;; \
+    esac
+
 RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} CGO_ENABLED=1 go build -ldflags "-s -w -linkmode external -extldflags -static" -o helloworld .
 
 # ----------------------------------
