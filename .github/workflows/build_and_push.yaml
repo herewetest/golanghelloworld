@@ -5,6 +5,10 @@ on:
     tags:
       - "*"
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   check_quality:
     runs-on: ubuntu-latest
@@ -69,5 +73,8 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:${{ github.ref_name }} .
-          docker push ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:${{ github.ref_name }}
+          echo "Checking that ${{ github.ref_name }} starts with 'v' and then a valid semver number"
+          echo "${{ github.ref_name }}" | grep -Eq "^v[0-9]+\.[0-9]+\.[0-9]+$"
+          TAGNAME=$(echo "${{ github.ref_name }}" | sed "s/^v\([0-9]\)/\1/")
+          docker build -t ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:$TAGNAME .
+          docker push ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:$TAGNAME
