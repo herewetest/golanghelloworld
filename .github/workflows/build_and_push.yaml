@@ -3,26 +3,59 @@ name: Build and Push Docker Image
 on:
   push:
     tags:
-      - '*'
+      - "*"
 
 jobs:
-  code_quality:
-    uses: ./utils/code_quality.yaml
+  check_quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check formatting w/ gofmt
+        run: |
+          gofmt -l -s -w .
+          git diff --exit-code
+
+      - name: Run go vet
+        run: |
+          go vet ./...
+
+      - name: Run staticcheck
+        run: |
+          staticcheck ./...
+
+      - name: Run Gosec Security Scanner
+        uses: securego/gosec@v2.18.2
+        with:
+          args: ./...
+
+      - name: Run govulncheck
+        run: |
+          govulncheck ./...
 
   test:
-    uses: ./utils/test.yaml
-    
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Test code
+        run: go test ./...
+
   build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Log in to GitHub Container Registry
-      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-    - name: Build and push Docker image
-      run: |
-        docker build -t ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:${{ github.ref }} .
-        docker push ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:${{ github.ref }}
+      - name: Build and push Docker image
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:${{ github.ref }} .
+          docker push ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:${{ github.ref }}
