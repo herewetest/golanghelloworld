@@ -77,4 +77,4 @@ jobs:
           echo "${{ github.ref_name }}" | grep -Eq "^v[0-9]+\.[0-9]+\.[0-9]+$"
           TAGNAME=$(echo "${{ github.ref_name }}" | sed "s/^v\([0-9]\)/\1/")
           docker build -t ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:$TAGNAME .
-          docker push ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:$TAGNAME
+          docker push ghcr.io/${{ github.repository }}:$TAGNAME
