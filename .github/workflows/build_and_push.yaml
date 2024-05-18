@@ -24,7 +24,11 @@ jobs:
 
       - name: Run staticcheck
         run: |
+          # Install staticcheck
           go install honnef.co/go/tools/cmd/staticcheck@latest
+          # Update path
+          export PATH="/usr/local/go/bin:$PATH"
+          # Run staticcheck
           staticcheck ./...
 
       - name: Run Gosec Security Scanner
