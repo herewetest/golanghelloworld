@@ -99,5 +99,4 @@ jobs:
           BASE=ghcr.io/${{ github.repository }}
           IMAGENAME="$BASE:${{ env.TAG }}"
           LATEST="$BASE:latest"
-          SHA="$BASE:${{ github.sha }}"
-          docker buildx build --push --platform linux/amd64,linux/arm/v6,linux/arm64 -t $IMAGENAME -t $LATEST -t $SHA .
+          docker buildx build --push --platform linux/amd64,linux/arm/v6,linux/arm64 -t $IMAGENAME -t $LATEST .
