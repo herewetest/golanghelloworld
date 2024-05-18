@@ -6,7 +6,7 @@ ARG TARGETOS
 ARG TARGETARCH
 
 COPY . .
-RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -ldflags "-linkmode external -extldflags -static" -o helloworld
+RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} CGO_ENABLED=1 go build -ldflags "-s -w -linkmode external -extldflags -static" -o helloworld .
 
 # ----------------------------------
 
