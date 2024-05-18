@@ -29,18 +29,20 @@ jobs:
         with:
           args: ./...
 
+      - name: Run staticcheck
+        uses: dominikh/staticcheck-action@v1
+        with:
+          version: "latest"
+
       - name: Run govulncheck
         run: |
           # Install govulncheck
           go install golang.org/x/vuln/cmd/govulncheck@latest
           # Update path
           export PATH="$(go env GOPATH)/bin:$PATH"
+          # Replace go version in go.mod otherwise govulncheck freaks out
+          sed -i 's/^go .*$/go 1.18.0/' go.mod
           govulncheck ./...
-
-      - name: Run staticcheck
-        uses: dominikh/staticcheck-action@v1
-        with:
-          version: "latest"
 
   test:
     runs-on: ubuntu-latest
