@@ -76,5 +76,6 @@ jobs:
           echo "Checking that ${{ github.ref_name }} starts with 'v' and then a valid semver number"
           echo "${{ github.ref_name }}" | grep -Eq "^v[0-9]+\.[0-9]+\.[0-9]+$"
           TAGNAME=$(echo "${{ github.ref_name }}" | sed "s/^v\([0-9]\)/\1/")
-          docker build -t ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:$TAGNAME .
-          docker push ghcr.io/${{ github.repository }}:$TAGNAME
+          IMAGENAME="ghcr.io/${{ github.repository }}:$TAGNAME"
+          docker build -t $IMAGENAME .
+          docker push $IMAGENAME
