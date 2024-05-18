@@ -7,7 +7,7 @@ ARG TARGETARCH
 
 COPY . .
 
-RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -o helloworld .
+RUN CGO_ENABLED=1 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -ldflags "-s -w" -o helloworld .
 
 # ----------------------------------
 
