@@ -7,7 +7,7 @@ ARG TARGETARCH
 
 COPY . .
 
-RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH}go build -o helloworld .
+RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -o helloworld .
 
 # ----------------------------------
 
