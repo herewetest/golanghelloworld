@@ -63,7 +63,7 @@ jobs:
         run: go test ./...
 
   build-and-push:
-    runs-on: actuated
+    runs-on: ubuntu-latest
     needs:
       - check_quality
       - test
@@ -81,13 +81,6 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Setup mirror
-        uses: self-actuated/hub-mirror@master
-
-      - name: Get repo
-        run: |
-          echo "REPO=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
@@ -101,17 +94,13 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ghcr.io
 
-      - name: Release build
-        id: release_build
-        uses: docker/build-push-action@v4
-        with:
-          outputs: type=registry,push=true
-          provenance: false
-          platforms: linux/amd64,linux/arm/v6,linux/arm64
-          build-args: |
-            Version=${{ env.TAG }}
-            GitCommit=${{ github.sha }}
-          tags: |
-            ghcr.io/${{ env.REPO }}:${{ github.sha }}
-            ghcr.io/${{ env.REPO }}:${{ env.TAG }}
-            ghcr.io/${{ env.REPO }}:latest
+      - name: Build and push Docker images
+        run: |
+          BASE=ghcr.io/${{ github.repository }}
+          IMAGENAME="$BASE:$TAGNAME"
+          LATEST="$BASE:latest"
+          SHA="$BASE:${{ github.sha }}"
+          docker buildx build --platform linux/amd64,linux/arm/v6,linux/arm64 -t $IMAGENAME -t $LATEST -t $SHA . 
+          docker push $IMAGENAME
+          docker push $LATEST
+          docker push $SHA
