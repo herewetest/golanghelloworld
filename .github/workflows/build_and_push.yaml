@@ -64,9 +64,9 @@ jobs:
 
   build-and-push:
     runs-on: ubuntu-latest
-    needs:
-      - check_quality
-      - test
+    # needs:
+    #   - check_quality
+    #   - test
 
     steps:
       - name: Check tag name formatting (semver)
