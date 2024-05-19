@@ -3,7 +3,7 @@
 name: Bug report
 about: Use this to report bugs
 title: ''
-labels: 'bug'
+labels: '[bug, needs-triage]'
 assignees: ''
 
 ---
